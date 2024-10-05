@@ -25,6 +25,15 @@ def request_factors
   factors.sort
 end
 
+=begin
+This class was created in an effort to end up with a function call 
+that looked like "n.is_factor?(factors)" instead of "is_factor?(n, factors)"
+but failed because "n" is an interger temporarily generated as part of the
+#upto method.  If I were to try to refactor this again, I would instead 
+aim for "factor.is_factor?(n)" since I think this both reads better, and
+because it is reasonable for "factor" to be a class (or part of a class)
+and respond to a custom methodin a way that is not reasonable for 
+the "n" iterator that is part of the #upto block.
 class Target
   attr_reader :value
 
@@ -43,6 +52,7 @@ class Target
     return false
   end
 end
+=end
 
 def is_factor?(number, factors)
   factors.each do |factor|
