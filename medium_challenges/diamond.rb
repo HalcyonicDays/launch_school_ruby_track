@@ -10,13 +10,17 @@
 #   1 & -2 for n-1 letter
 #   A appears at alphabetical letter position
 
+# Update: it should be sufficient just to use String#rjust and
+# knowledge of the letter's index relative to the target letter 
+# to calculate white-space-offsets and String#<< the right letter
+
 
 class Diamond
   
   def self.make_diamond(letter)
     @letter = letter.to_s
     capitalized = determine_case(letter)
-    print_diamond(letter_position(letter))
+    print_diamond(letter_index(letter))
   end
 
   def self.letter_position(letter)
@@ -28,18 +32,13 @@ class Diamond
     count
   end
 
-  def letter_index(letter)
+  def self.letter_index(letter)
     alphabet = ('A'..'Z').to_a
     alphabet.index(letter) + 1
   end
 
-  def faster_letter_index(letter)
-    alphabet = {}
-    count = 1
-    'A'.upto('Z') do |n| 
-      alphabet[n] = count
-      count +=1
-    end
+  def self.faster_letter_index(letter)
+    alphabet = ('A'..'Z').to_a.each_with_index.to_h
     alphabet[letter]
   end
 
