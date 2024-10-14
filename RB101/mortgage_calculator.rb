@@ -9,9 +9,10 @@ class Loan
   end
 
   def monthly_payment
-    payment = amount * (monthly_interest_rate /
-              (1 - (1 + monthly_interest_rate)**(-monthly_term)))
-    
+    payment = amount *
+                (monthly_interest_rate /
+                (1 - (1 + monthly_interest_rate)**(-monthly_term)))
+
     format("%.2f", payment)
   end
 
@@ -49,6 +50,14 @@ personal_loan = {
   rate: 1.2,
   term: 36
 }
+
+=begin
+It's not that I didn't think about data validation, but rather, that I would
+expect it to happen elsewhere - specifically, when building the input fields on
+a web form, the format and allowable values of the webform, as well as the language
+used to explain the data input would be responsible for communicating expectations to
+the user, as well as ensuring only acceptable values (i.e. floats) are permitted
+=end
 
 auto = Loan.new(auto_loan)
 home = Loan.new(home_loan)
