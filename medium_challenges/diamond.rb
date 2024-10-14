@@ -71,6 +71,7 @@ Diamond.make_diamond('C')
 
 =begin
     A       A at 5
+<<<<<<< HEAD
    B B      B at 4, 6 (diff 2)
   C   C     C at 3, 7 (diff 4)
  D     D    D at 2, 8 (diff 6)
@@ -93,5 +94,15 @@ E.rJust(5-n) << C.rJust(2n+1) (rjust 1, 9)
 
 n=4 ?
 D.rJust(5-n) << D.rJust(2n+1) (rjust 2, 7)
+=======
+   B B      B at 4,6
+  C   C     C at 3, 7
+ D     D    D at 2, 8
+E       E   E at 1, 9
+ D     D    D at 2, 8
+  C   C     C at 3, 7
+   B B      B at 4,6
+    A       A at 5
+>>>>>>> 5e9ee0df2b1ac9508d572aff345ced2b3b547d96
 =end
 
