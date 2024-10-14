@@ -1,0 +1,10 @@
+en: 
+  welcome: "Welcome to Calculator! Enter your name:"
+  valid_name: "Make sure to enter a valid name."
+  first_number: "What's the first number?"
+  second_number: "What's the second number?"
+  operation: "What's the operation? \n1) add \n2) subtract \n3) multiply \n4) divide"
+  invalid_operation: "That's not a valid operation choice."
+  final_result: "The result is" 
+  futher_operations: "Do you want to perform another calculation? (Y if yes)"
+  divide_by_zero: "Cannot divide by zero"
