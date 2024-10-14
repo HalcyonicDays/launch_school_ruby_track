@@ -72,18 +72,18 @@ end
 puts "Let's play Rock-Paper-Scissors!"
 
 loop do
-  choice =  case get_choice
-            when '1' || 'r' then :rock
-            when '2' || 'p' then :paper
-            when '3' || 's' then :scissors
-            else puts "I didn't understand that, please try again" and get_choice
-            end
+  choice = case get_choice
+           when '1' || 'r' then :rock
+           when '2' || 'p' then :paper
+           when '3' || 's' then :scissors
+           else puts "I didn't understand that, please try again" and get_choice
+           end
 
   puts MOVES.sample.new().send(choice)
 
   puts "would you like to play again? y/n"
-  continue = gets.chomp.downcase[0]
-  break unless continue == 'y'
+  continue = gets.chomp.downcase
+  break unless continue.starts_with?('y')
   puts "Let's play again!"
 end
 
