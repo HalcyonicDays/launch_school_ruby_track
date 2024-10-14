@@ -91,5 +91,7 @@ D.rJust(5-n) << D.rJust(2n+1) (rjust 2, 7)
 n=4
 E.rJust(5-n) << C.rJust(2n+1) (rjust 1, 9)
 
+n=4 ?
+D.rJust(5-n) << D.rJust(2n+1) (rjust 2, 7)
 =end
 
