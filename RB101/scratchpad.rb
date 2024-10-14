@@ -5,6 +5,11 @@ puts "test"
 some_test_method_name()
 puts "test over"
 
+def rock_wins
+  __method__.to_s.split('_').join(' ').capitalize << '!'
+end
+puts rock_wins
+
 
 class Rock; end
 class Paper; end
