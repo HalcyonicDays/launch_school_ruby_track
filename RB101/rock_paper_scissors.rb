@@ -95,9 +95,20 @@ end
 
 MOVES = [Rock, Paper, Scissors]
 MATCH_SIZE = 3
+CHOICES = {}
+
+# Assigns a move to a number & letter, e.g. {'1' => :rock, 'r' => :rock, etc.}
+def load_possible_responses 
+  MOVES.each_with_index do |move, idx| 
+    CHOICES["#{idx + 1}"] = "#{move.to_s.downcase.to_sym}"               # assigns a move to a number selection
+    CHOICES["#{move.to_s.downcase[0]}"] = "#{move.to_s.downcase.to_sym}" # assigns a move to a letter selection
+  end
+  puts CHOICES.inspect
+end
 
 def implement_advanced_rules
   require_relative 'rps_lizard_spock'
+  load_possible_responses
 end
 
 def get_choice
@@ -107,6 +118,7 @@ def get_choice
   return gets.chomp.downcase[0] # redundant return included for clarity
 end
 
+=begin
 def throw_hands
   choice = get_choice
   hand = case
@@ -120,7 +132,7 @@ def throw_hands
          end
   hand.to_s.downcase.to_sym
 end
-
+=end
 =begin
 def throw_hands
   choice = get_choice
@@ -133,7 +145,15 @@ def throw_hands
   end
 =end
 
-puts "Let's play Rock-Paper-Scissors!"
+def throw_hands
+  loop do
+    choice = get_choice
+    return CHOICES[choice] if CHOICES[choice]
+    puts "I didn't understand that; please try again" and throw_hands
+  end
+end
+
+load_possible_responses and puts "Let's play Rock-Paper-Scissors!"
 
 rounds = 0
 loop do
