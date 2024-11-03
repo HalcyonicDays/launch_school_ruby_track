@@ -18,7 +18,7 @@ puts number
 # as the one first initalized several lines earlier.
 
 # Parameters vs Arguments
-  # => Arguments are part of Method Definition
+  # => Parameters are part of Method Definition
   # => Arguments are part of Method Invocation
 
 def my_method(param_1, param_2)
