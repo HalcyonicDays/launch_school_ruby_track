@@ -163,3 +163,72 @@ p string_to_integer('4321') == 4321
 p string_to_integer('570')  == 570
 # Wow.  The hash solution is certainly the better approach, but I'm clearly way too tired to
 # be thinking clearly. The real lesson here is not to try to power through exhaustion.
+
+STR_TO_NUM = {
+  '0' => 0, '1' => 1, '2' => 2, '3' => 3, '4' => 4,
+  '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9
+}
+
+def string_to_integer(str)
+  num = 0
+  magnitude = str.length - 1
+  str.chars.each do |char|
+    num += STR_TO_NUM[char] * (10**magnitude)
+    magnitude -= 1
+  end
+  num
+end
+p string_to_integer('4321') == 4321
+p string_to_integer('570')  == 570
+
+
+def string_to_signed_integer(str)
+  unsigned_str = ['+', '-'].include?(str[0]) ? str[1..-1] : str       
+  sign = str[0] == '-' ? -1 : 1
+  string_to_integer(unsigned_str) * sign
+end
+
+p string_to_signed_integer('4321') == 4321
+p string_to_signed_integer('-570') == -570
+p string_to_signed_integer('+100') == 100
+
+
+NUM_TO_STR = {
+  0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4',
+  5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9'
+}
+
+include Math
+
+
+def complex_integer_to_string(int)
+  length = log10(int).floor
+  string = ''
+  length.downto(0) do |len|
+    digit = int / (10**len)
+    int = int - (digit * (10**len))
+    string << NUM_TO_STR[digit]
+  end
+  string
+end
+
+def integer_to_string(int)
+  NUM_TO_STR.fetch(int) { complex_integer_to_string(int) }
+end
+
+puts "int to str tests:"
+p integer_to_string(4321) == '4321'
+p integer_to_string(0) == '0'
+p integer_to_string(5000) == '5000'
+
+# hexadecimal_to_integer('4D9f') == 19871
+
+def signed_integer_to_string(int)
+  return integer_to_string(int) if int == 0
+  sign = int > 0 ? '+' : '-'
+  integer_to_string(int.abs).prepend(sign)
+end
+
+p signed_integer_to_string(4321) == '+4321'
+p signed_integer_to_string(-123) == '-123'
+p signed_integer_to_string(0) == '0'
