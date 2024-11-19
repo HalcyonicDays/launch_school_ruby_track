@@ -1,5 +1,5 @@
 # How would you order this array of number strings by descending numeric value?
-=begin
+
 arr = ['10', '11', '9', '7', '8']
 p arr.sort { |a, b| b.to_i <=> a.to_i }
 
@@ -57,7 +57,6 @@ puts hsh2
 # Wow, I can't believe that Array#first and Array#last are getter methods with no 
 # corresponding setter methods.  Granted, I've never needed to "manually" specify/assign a
 # value to an array like that, but even so, I can't believe I hadn't known that until now
-=end
 
 # Determine the total age of just the male members of the family.
 munsters = {
@@ -210,6 +209,11 @@ end
 p new_arr == [[], [3, 12], [9], [15]]
 p arr == [[2], [3, 5, 7, 12], [9], [11, 13, 15]]
 
+
+# Given the following data structure, and without using the Array#to_h method, write some code
+# that will return a hash where the key is the first item in each sub array and the value is
+# the second item.
+
 arr = [[:a, 1], ['b', 'two'], ['sea', {c: 3}], [{a: 1, b: 2, c: 3, d: 4}, 'D']]
 
 hsh = {}
@@ -218,3 +222,62 @@ arr.each do |pair|
 end
 
 p hsh == {:a=>1, "b"=>"two", "sea"=>{:c=>3}, {:a=>1, :b=>2, :c=>3, :d=>4}=>"D"}
+
+# Given the following data structure, return a new array containing the same sub-arrays as the
+# original but ordered logically by only taking into consideration the odd numbers they contain.
+
+arr = [[1, 6, 9], [6, 1, 7], [1, 8, 3], [1, 5, 9]]
+
+new_arr = arr.sort_by do |sub_arr|
+  sub_arr.select { |elm| elm.odd? }
+end
+
+p new_arr ==[[1, 8, 3], [1, 5, 9], [6, 1, 7], [1, 6, 9]]
+
+
+# Given this data structure write some code to return an array containing the colors of the
+# fruits, and the sizes of the vegetables. The sizes should be uppercase and the colors should
+# be capitalized.
+
+hsh = {
+  'grape' => {type: 'fruit', colors: ['red', 'green'], size: 'small'},
+  'carrot' => {type: 'vegetable', colors: ['orange'], size: 'medium'},
+  'apple' => {type: 'fruit', colors: ['red', 'green'], size: 'medium'},
+  'apricot' => {type: 'fruit', colors: ['orange'], size: 'medium'},
+  'marrow' => {type: 'vegetable', colors: ['green'], size: 'large'},
+}
+
+some_arr = []
+hsh.each do |_food, properties|
+  case properties[:type]
+  when "fruit" 
+    some_arr << properties[:colors].map { |color| color.capitalize}
+  when "vegetable"
+    some_arr << properties[:size].upcase
+  end
+end
+
+p some_arr == [["Red", "Green"], "MEDIUM", ["Red", "Green"], ["Orange"], "LARGE"]
+
+new_arr = hsh.map do |_food, properties|
+  case properties[:type]
+  when "fruit" 
+    properties[:colors].map { |color| color.capitalize}
+  when "vegetable"
+    properties[:size].upcase
+  end
+end
+
+p new_arr == [["Red", "Green"], "MEDIUM", ["Red", "Green"], ["Orange"], "LARGE"]
+
+# Given this data structure write some code to return an array which contains only the hashes
+# where all the integers are even.
+
+arr = [{a: [1, 2, 3]}, {b: [2, 4, 6], c: [3, 6], d: [4]}, {e: [8], f: [6, 10]}]
+evens = arr.map do |hsh|
+  hsh.select do |key, values|
+    values.all? { |value| value.even? }
+  end
+end
+
+p evens
