@@ -209,3 +209,12 @@ end
 
 p new_arr == [[], [3, 12], [9], [15]]
 p arr == [[2], [3, 5, 7, 12], [9], [11, 13, 15]]
+
+arr = [[:a, 1], ['b', 'two'], ['sea', {c: 3}], [{a: 1, b: 2, c: 3, d: 4}, 'D']]
+
+hsh = {}
+arr.each do |pair|
+  pair.each_slice(2) { |key, value| hsh[key] = value}
+end
+
+p hsh == {:a=>1, "b"=>"two", "sea"=>{:c=>3}, {:a=>1, :b=>2, :c=>3, :d=>4}=>"D"}
