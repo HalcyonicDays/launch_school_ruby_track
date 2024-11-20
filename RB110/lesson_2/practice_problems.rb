@@ -270,14 +270,42 @@ end
 
 p new_arr == [["Red", "Green"], "MEDIUM", ["Red", "Green"], ["Orange"], "LARGE"]
 
-# Given this data structure write some code to return an array which contains only the hashes
-# where all the integers are even.
+# Given this data structure write some code to return an array which contains only the
+# hashes where all the integers are even.
 
-arr = [{a: [1, 2, 3]}, {b: [2, 4, 6], c: [3, 6], d: [4]}, {e: [8], f: [6, 10]}]
-evens = arr.map do |hsh|
-  hsh.select do |key, values|
+arr = [
+  {a: [1, 2, 3]}, 
+  {b: [2, 4, 6], c: [3, 6], d: [4]}, 
+  {e: [8], f: [6, 10]}
+]
+
+even_hashes = arr.select do |hsh|
+  hsh.values.flatten.all? { |value| value.even? }
+end
+
+even_keys = arr.map do |hsh|
+  hsh.select do |key, values| 
     values.all? { |value| value.even? }
   end
 end
+even_keys.reject! { |hsh| hsh.empty? }
 
-p evens
+p even_hashes
+p even_keys
+
+# Create a UUID consists of 32 hexadecimal characters, and is typically broken into 
+# 5 sections like this 8-4-4-4-12 and represented as a string.
+
+UUID_CHARS = ('a'..'f').to_a + ('0'..'9').to_a
+UUID_PATTERN = [8, 4, 4, 4, 12]
+
+def create_uuid()
+  uuid = UUID_PATTERN.map do |length|
+    segment = ''
+    length.times { segment << UUID_CHARS.sample }
+    segment
+  end
+  uuid.join('-')
+end
+
+p create_uuid
