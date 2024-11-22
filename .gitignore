@@ -5,7 +5,7 @@
 temp/ 
 
 # ignore scratchpad (temp) file
-*scratchpad.rb
+**/scratchpad.rb
 
 # ignore rubocop configs
- *.rubocop.yml
+ **/.rubocop.yml
