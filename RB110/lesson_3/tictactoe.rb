@@ -19,25 +19,17 @@ squares in a row, then the game is a tie.
 PLAYER_1 = { id: 1, token: 'X' }
 PLAYER_2 = { id: 2, token: 'O' }
 
-WINSTATES = {
-  horizontals: [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
-  verticals: [[0, 3, 6], [1, 4, 7], [2, 5, 8]],
-  diagonals: [[0, 4, 8], [2, 4, 6]]
-}
+WINSTATES = [[0, 1, 2], [3, 4, 5], [6, 7, 8]] +
+            [[0, 3, 6], [1, 4, 7], [2, 5, 8]] +
+            [[0, 4, 8], [2, 4, 6]]
 
 def winner_exists?(board, player)
-  spaces = []
-  board.each_with_index do |cell, index|
-    spaces << index if cell == player[:token]
-  end
+  WINSTATES.each do |set|
+    summary = board.values_at(*set)
 
-  WINSTATES.values.each do |win_set|
-    win_set.each do |set|
-      summary = set.map { |position| spaces.include?(position) }
-      if summary.all? true
-        puts "Player #{player[:id]} is the winner!"
-        return true
-      end
+    if summary.all? player[:token]
+      puts "Player #{player[:id]} is the winner!"
+      return true
     end
   end
 
