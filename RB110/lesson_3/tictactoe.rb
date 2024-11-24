@@ -16,8 +16,6 @@ squares in a row, then the game is a tie.
 10. Good bye!
 =end
 
-require 'pry'
-
 PLAYER_1 = { id: 1, token: 'X' }
 PLAYER_2 = { id: 2, token: 'O' }
 
