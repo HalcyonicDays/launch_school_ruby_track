@@ -37,6 +37,7 @@ Algorithm:
 =end
 
 TWENTY_ONE = 21
+DEALER_LIMIT = 17
 HIGH_ACE_VALUE = 11
 LOW_ACE_VALUE = 1
 FACE_CARD_VALUE = 10
@@ -96,6 +97,8 @@ def determine_winner(player_total, dealer_total)
   scores.key(max_score[1])
 end
 
+running_total {"Player" => 0, "Dealer" => 0}
+
 loop do
   # Reset the game
   deck = STARTING_DECK.shuffle
@@ -133,7 +136,7 @@ loop do
 
   # Dealer Hit or Stay loop
   dealer_total = calculate_total(dealers_hand)
-  while dealer_total < 17 && !winner
+  while dealer_total < DEALER_LIMIT && !winner
     puts "Dealer hits!"
     hit("Dealer", deck, dealers_hand)
     dealer_total = calculate_total(dealers_hand)
@@ -145,7 +148,12 @@ loop do
   winner ||= determine_winner(player_total, dealer_total)
   puts "#{winner} is the winner!"
 
+  running_total[winner] += 1
+  break if running_total.values.any?(5)
+
   puts "Would you like to play again? (y)es to play, anything else to cancel."
   play_again = gets.chomp.downcase
   break unless play_again.start_with?('y')
 end
+
+puts "#{running_total.key(5)} is the champion!" if score.values.any?(5)
