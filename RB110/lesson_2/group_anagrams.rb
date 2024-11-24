@@ -45,7 +45,6 @@ algorithm:
       means it needs to return *an array* containing the array of "loner" values, but also needs to
       return an empty array if there are no values.  Otherwise the final result will have a trailing "[]"
 - combine arrays into final output
-
 =end
 
 def group_anagrams(words)
