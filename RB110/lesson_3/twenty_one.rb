@@ -25,7 +25,7 @@ Algorithm:
    - only one card is visible ("Dealer is showing X")
    - generate message to stylize card name
 4. Deal 2 cards to the player and calculate current total
-   - if the player has 21, the round ends    
+   - if the player has 21, the round ends
 5. Give the player the option to hit or stay
 6. on hit, deal another card and recalculate total
    - check for 21 or bust
@@ -37,46 +37,115 @@ Algorithm:
 =end
 
 TWENTY_ONE = 21
+HIGH_ACE_VALUE = 11
+LOW_ACE_VALUE = 1
+FACE_CARD_VALUE = 10
 SUITS = %w(Hearts Diamonds Clubs Spades)
 TYPES = %w(2 3 4 5 6 7 8 9 Jack Queen King Ace)
 STARTING_DECK = SUITS.product(TYPES)
 VOWELS = %w(Ace 8)
 
-VALUES = {"Ace" => 11, "Jack" => 10, "Queen" => 10, "King" => 10 }
+VALUES = {
+  "Ace" => HIGH_ACE_VALUE,
+  "Jack" => FACE_CARD_VALUE,
+  "Queen" => FACE_CARD_VALUE,
+  "King" => FACE_CARD_VALUE
+}
 
 def determine_value(value)
   VALUES.fetch(value) { value.to_i }
 end
 
-def announce_hand(hand, limit=nil)
-  visible_cards = limit ? hand.first(limit) : hand
+def announce_hand(name, hand, limit=nil)
+  visible_cards = limit ? hand.last(limit) : hand
   visible_cards.each do |card|
     article = VOWELS.include?(card[1]) ? 'an' : 'a'
-    puts "<name> is showing #{article} #{card[1]} of #{card[0]}"
+    puts "#{name} is showing #{article} #{card[1]} of #{card[0]}"
   end
-  calculate_total(visible_cards)
+  # total = calculate_total(visible_cards)
 end
 
 def calculate_total(hand)
   total = 0
-  
-  hand.each do |card|
-    total += determine_value(card[1])
-  end
-  
+
+  hand.each { |card| total += determine_value(card[1]) }
   aces = hand.count { |card| card[1] == 'Ace' }
-  
-  
-  puts "total is #{total}"
+
+  while total > TWENTY_ONE && aces >= 1
+    total -= (HIGH_ACE_VALUE - LOW_ACE_VALUE)
+    aces -= 1
+  end
+
+  puts "Current total is: #{total}"
+  total
 end
 
-# Reset the game
-deck = STARTING_DECK.shuffle
-dealers_hand = []
-players_hand = []
+def busted?(score)
+  score > TWENTY_ONE
+end
 
-2.times { dealers_hand <<  deck.pop }
-announce_hand(dealers_hand, 1)
+def hit(name, deck, hand, hidden_draw: false)
+  hand << deck.pop
+  announce_hand(name, hand, 1) unless hidden_draw
+end
 
-2.times { players_hand << deck.pop }
-announce_hand(players_hand)
+def determine_winner(player_total, dealer_total)
+  return "It's a tie!  No one" if player_total == dealer_total
+  scores = { "Player" => player_total, "Dealer" => dealer_total }
+  max_score = scores.max_by { |_player, score| score }
+  scores.key(max_score[1])
+end
+
+loop do
+  # Reset the game
+  deck = STARTING_DECK.shuffle
+  players_hand = []
+  dealers_hand = []
+  winner = nil
+
+  # Deal cards
+  hit("Dealer", deck, dealers_hand, true)
+  hit("Dealer", deck, dealers_hand)
+  2.times { hit("Player", deck, players_hand) }
+
+  player_total = calculate_total(players_hand)
+  winner = "Player" if player_total == TWENTY_ONE
+
+  # Player Hit or Stay loop
+  until busted?(player_total) || winner
+    puts "Will you (h)it or (s)tay?"
+    response = gets.chomp.downcase
+
+    if response.start_with?('h')
+      puts "Player hits!"
+      hit("Player", deck, players_hand)
+      player_total = calculate_total(players_hand)
+      winner = "Player" if player_total == TWENTY_ONE
+    elsif response.start_with?('s')
+      puts "player stays on #{player_total}"
+      break
+    else
+      puts "I didn't understand that..."
+    end
+  end
+
+  winner = "Dealer" if busted?(player_total)
+
+  # Dealer Hit or Stay loop
+  dealer_total = calculate_total(dealers_hand)
+  while dealer_total < 17 && !winner
+    puts "Dealer hits!"
+    hit("Dealer", deck, dealers_hand)
+    dealer_total = calculate_total(dealers_hand)
+    winner = "Dealer" if dealer_total == TWENTY_ONE
+  end
+  winner = "Player" if busted?(dealer_total)
+
+  # Determine winner
+  winner ||= determine_winner(player_total, dealer_total)
+  puts "#{winner} is the winner!"
+
+  puts "Would you like to play again? (y)es to play, anything else to cancel."
+  play_again = gets.chomp.downcase
+  break unless play_again.start_with?('y')
+end
