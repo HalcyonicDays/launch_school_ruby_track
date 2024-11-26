@@ -51,3 +51,19 @@ p after_midnight('12:34') == 754
 p before_midnight('00:00') == 0
 p before_midnight('24:00') == 0
 p before_midnight('12:34') == 686
+
+def swap(string)
+  string.split.map do |word|
+    switch_ends_around(word)
+  end.join(' ')
+end
+
+def switch_ends_around(word)
+  word[0], word[-1] = word[-1], word[0]
+  word
+end
+
+puts "letter swap test: "
+p swap('Oh what a wonderful day it is') == 'hO thaw a londerfuw yad ti si'
+p swap('Abcde') == 'ebcdA'
+p swap('a') == 'a'
