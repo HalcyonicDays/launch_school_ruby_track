@@ -174,3 +174,65 @@ p halvsies([1, 2, 3, 4, 1]) == [[1, 2, 3], [4, 1]] # true
 p halvsies([1, 5, 2, 4, 3]) == [[1, 5, 2], [4, 3]] # true
 p halvsies([5]) == [[5], []] # true
 p halvsies([]) == [[], []] # true
+
+
+
+# Given an unordered array and the information that exactly one value in the array
+# occurs twice (every other value occurs exactly once), how would you determine
+# which value occurs twice? Write a method that will find and return the duplicate
+# value that is known to be in the array.
+
+def find_dup(arr)
+  while arr.size > 0
+    elm = arr.pop
+    return elm if arr.include?(elm)
+  end
+end
+
+puts "duplicates tests:"
+p find_dup([1, 5, 3, 1]) == 1
+p find_dup([18,  9, 36, 96, 31, 19, 54, 75, 42, 15,
+            38, 25, 97, 92, 46, 69, 91, 59, 53, 27,
+            14, 61, 90, 81,  8, 63, 95, 99, 30, 65,
+            78, 76, 48, 16, 93, 77, 52, 49, 37, 29,
+            89, 10, 84,  1, 47, 68, 12, 33, 86, 60,
+            41, 44, 83, 35, 94, 73, 98,  3, 64, 82,
+            55, 79, 80, 21, 39, 72, 13, 50,  6, 70,
+            85, 87, 51, 17, 66, 20, 28, 26,  2, 22,
+            40, 23, 71, 62, 73, 32, 43, 24,  4, 56,
+            7,  34, 57, 74, 45, 11, 88, 67,  5, 58]) == 73
+
+
+# Write a method named include? that takes an Array and a search value as arguments.
+# This method should return true if the search value is in the array, false if it
+# is not. You may not use the Array#include? method in your solution.
+
+def include?(arr, target)
+  arr.each { |elm| return true if elm == target }
+  false
+end
+
+puts "include? tests:"
+p include?([1,2,3,4,5], 3) == true
+p include?([1,2,3,4,5], 6) == false
+p include?([], 3) == false
+p include?([nil], nil) == true
+p include?([], nil) == false
+
+
+# What will the following code print, and why? Don't run the code until you have tried to answer.
+
+array1 = %w(Moe Larry Curly Shemp Harpo Chico Groucho Zeppo)
+array2 = []
+array1.each { |value| array2 << value }
+array1.each { |value| value.upcase! if value.start_with?('C', 'S') }
+=begin
+I would expect array2 to retain a connection to the values referenced in array2, and so any mutation
+of the values in array1 would likewise mutate array2.  If I imagine the element "Curly" as some
+object that *happens to* resemble a String, it's a little easier to reason about this.
+array1 contains a list containing some number of objects.  Those objects are copied over to array2.
+If the object itself is mutated, and each array is just holding on to a reference to that object,
+then any change in one array should be reflected in the other.
+The output I expect is: [Moe, Larry, CURLY, SHEMP, Harpo, CHICO, Groucho, Zeppo]
+=end
+puts array2
