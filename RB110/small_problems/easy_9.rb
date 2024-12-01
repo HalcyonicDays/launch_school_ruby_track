@@ -62,3 +62,180 @@ p sequence(5) == [1, 2, 3, 4, 5]
 p sequence(3) == [1, 2, 3]
 p sequence(1) == [1]
 p sequence(-3)
+
+# Write a method that takes a string as an argument, and returns an Array
+# that contains every word from the string, to which you have appended a
+# space and the word length.
+# You may assume that words in the string are separated by exactly one space,
+# and that any substring of non-space characters is a word.
+
+def word_lengths(str)
+  str.split.map { |word| "#{word} #{word.length}" }
+end
+
+puts "word length tests:"
+p word_lengths("cow sheep chicken") == ["cow 3", "sheep 5", "chicken 7"]
+p word_lengths("baseball hot dogs and apple pie") ==
+  ["baseball 8", "hot 3", "dogs 4", "and 3", "apple 5", "pie 3"]
+p word_lengths("It ain't easy, is it?") == ["It 2", "ain't 5", "easy, 5", "is 2", "it? 3"]
+p word_lengths("Supercalifragilisticexpialidocious") ==
+  ["Supercalifragilisticexpialidocious 34"]
+p word_lengths("") == []
+
+# Write a method that takes a first name, a space, and a last name passed as a
+# single String argument, and returns a string that contains the last name, a
+# comma, a space, and the first name.
+
+def swap_name(name)
+  first, last = name.split
+  "#{last}, #{first}"
+end
+
+p swap_name('Joe Roberts') == 'Roberts, Joe'
+
+# Create a method that takes two integers as arguments. The first argument is a
+# count, and the second is the first number of a sequence that your method will
+# create. The method should return an Array that contains the same number of
+# elements as the count argument, while the values of each element will be
+# multiples of the starting number.
+
+# You may assume that the count argument will always have a value of 0 or greater,
+# while the starting number can be any integer value. If the count is 0, an empty
+# list should be returned.
+
+def sequence(total, start)
+  (1..total).map { |num| start * num }
+end
+
+puts "sequence tests (again):"
+p sequence(5, 1) == [1, 2, 3, 4, 5]
+p sequence(4, -7) == [-7, -14, -21, -28]
+p sequence(3, 0) == [0, 0, 0]
+p sequence(0, 1000000) == []
+
+# Write a method that determines the mean (average) of the three scores passed
+# to it, and returns the letter value associated with that grade.
+
+def get_grade(*nums)
+  average = nums.inject(:+) / nums.length
+  case average
+  when 101..   then 'A+'
+  when 90..100 then 'A'
+  when 80...90 then 'B'
+  when 70...80 then 'C'
+  when 60...70 then 'D'
+  when  0...60 then 'F'
+  end
+end
+
+p get_grade(95, 90, 93) == "A"
+p get_grade(50, 50, 95) == "D"
+p get_grade(100, 100, 110) == "A+"
+
+# Write a method which takes a grocery list (array) of fruits with quantities
+# and converts it into an array of the correct number of each fruit.
+
+def buy_fruit_flat(grocery_list)
+  grocery_list.map { |fruit, amount| [fruit] * amount }.flatten
+end
+
+def buy_fruit_long(grocery_list)
+  list = []
+  grocery_list.each do |entry|
+   fruit = entry[0]
+   amount = entry[1]
+   amount.times { list << fruit }
+ end
+ list
+end
+
+puts "grocery list tests:"
+p buy_fruit_flat([["apples", 3], ["orange", 1], ["bananas", 2]]) ==
+  ["apples", "apples", "apples", "orange", "bananas","bananas"]
+p buy_fruit_long([["apples", 3], ["orange", 1], ["bananas", 2]]) ==
+  ["apples", "apples", "apples", "orange", "bananas","bananas"]
+
+# Write a program that prints out groups of words that are anagrams. 
+# Anagrams are words that have the same exact letters in them but in
+# a different order. Your output should look something like this:
+# => ["demo", "dome", "mode"]
+# => ["neon", "none"]
+# => (etc)
+
+def find_anagrams(words)
+  sorted_words = group_words(words)
+  sorted_words.values.each { |grouping| p grouping }
+end
+
+def group_words(words)
+  sorted_words = {}
+  words.each do |word|
+    sorted = word.split('').sort.join
+    sorted_words[sorted] ||= []
+    sorted_words[sorted] << word
+  end
+  sorted_words
+end
+
+words =  ['demo', 'none', 'tied', 'evil', 'dome', 'mode', 'live',
+          'fowl', 'veil', 'wolf', 'diet', 'vile', 'edit', 'tide',
+          'flow', 'neon']
+
+
+find_anagrams(words)
+# ["demo", "dome", "mode"]
+# ["none", "neon"]
+# ["tied", "diet", "edit", "tide"]
+# ["evil", "live", "veil", "vile"]
+# ["fowl", "wolf", "flow"]
+
+# Write a method that takes one argument, a positive integer, and
+# returns the sum of its digits.
+
+def sum(int)
+  int.to_s.split('').map(&:to_i).inject(:+)
+end
+
+# The below method was created because a few problem sets ago, one of my
+# solutions was used an example of being "too clever for its own good" and
+# I took this to heart, and added a more readable implementation because
+# "code is read many more times that it is written" and not about the number
+# of lines, but about how easy it is for someone in the future to return to it.
+def readable_sum(int)
+  digits = int.to_s.split('')
+  digits.map! { |digit| digit.to_i }
+  digits.sum
+end
+
+p sum(23) == 5
+p sum(496) == 19
+p sum(123_456_789) == 45
+p readable_sum(23) == 5
+p readable_sum(496) == 19
+p readable_sum(123_456_789) == 45
+
+# Write a method that returns an Array that contains every other element of an
+# Array that is passed in as an argument. The values in the returned list
+# should be those values that are in the 1st, 3rd, 5th, and so on elements of
+# the argument Array.
+
+def oddities(arr)
+  alternate_elements = []
+  arr.each_with_index do |element, idx|
+    alternate_elements << element if idx.even?
+  end
+  alternate_elements
+end
+# This method was interesting.  Originally my new array was called "odds" but then
+# I ended up with "odd << element if idx.even?" and that raised an eyebrow.  Even
+# though the method is called "oddities" (which may be worth a refactor) and I can't
+# change it, I can at least make the intent more clear in the implementation by
+# calling the new array "alternate_elements" instead of "odds"
+
+puts "oddities tests:"
+p oddities([2, 3, 4, 5, 6]) == [2, 4, 6]
+p oddities([1, 2, 3, 4, 5, 6]) == [1, 3, 5]
+p oddities(['abc', 'def']) == ['abc']
+p oddities([123]) == [123]
+p oddities([]) == []
+p oddities([1, 2, 3, 4, 1]) == [1, 3, 1]
