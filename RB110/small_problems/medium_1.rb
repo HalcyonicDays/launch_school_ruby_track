@@ -127,28 +127,293 @@ p n_switchs(1000) == [
   729, 784, 841, 900, 961
 ]
 
+=begin
 # Write a method that displays a 4-pointed diamond in an n x n grid,
 # where n is an odd integer that is supplied as an argument to the method.
 # You may assume that the argument will always be an odd integer.
 
-def diamond(odd_int)
+Problem: draw a symetrical nxn diamond where n is an odd number
 
+input : odd integer
+output: draw drawn to console with asterisks
+
+Examples:
+(3x3)
+ *
+***
+ *
+
+(5x5)
+  *
+ ***
+*****
+ ***
+  *
+
+Requirements:
+- output some number of diamonds on each row
+  - starting with 1, and increasing by 2 until reaching the max size
+  - once at max size, decrease back down to 1
+  - diamond-line must be centered
+
+Data Structure: n/a? a loop
+
+Algorithm:
+- iterate up from 1 max size
+- at each step, output that number of stars, centered
+- then iterate back down to 1
+- a single loop can be used if the +/- operator is switch halfway through
+  - this has the advantage of using a single loop to count up and down
+=end
+
+STAR = '*'
+def diamond(max_size)
+  puts "#{max_size}x#{max_size} diamond:"
+  amount = 1
+  operator = :+
+  rows = 0
+  
+  loop do
+    star_pattern = STAR * amount
+    
+    puts (star_pattern).center(max_size)
+    amount = amount.send(operator, 2)
+    operator = :- if amount == max_size
+    
+    rows += 1
+    break if rows == max_size
+  end
 end
 
 diamond(1)
 diamond(3)
 diamond(5)
+diamond(7)
 diamond(9)
+
+def hollow_diamond(max_size)
+  puts "#{max_size}x#{max_size} hollow diamond:"
+  amount = 1
+  operator = :+
+  rows = 0
+  
+  loop do
+    max_stars  = [amount, 2].min
+    min_spaces = [amount-2,0].max
+    star_pattern = (STAR * max_stars).split('').join(' ' * min_spaces)
+
+    puts (star_pattern).center(max_size)
+    amount = amount.send(operator, 2)
+    operator = :- if amount == max_size
+    
+    rows += 1
+    break if rows == max_size
+  end
+end
 =begin
-* (1x1)
+  Since using the #send method should rightfully raise a few eyebrows, please
+  enjoy this more sensible (and readable) version below:
+  Note: original version is preserved above as a cautionary tale.
 
- * (3x3)
-***
- *
+  ascending? = true
+  amount = (ascending? ? amount + 2 : amount - 2)
+  ascending? = false if amount == max_size
 
-  * (5x5)
- ***
-*****
- ***
-  *
+  This replaces:
+
+  operator = :+
+  amount = amount.send(operator, 2)
+  operator = :- if amount == max_size
 =end
+
+hollow_diamond(1)
+hollow_diamond(3)
+hollow_diamond(5)
+hollow_diamond(7)
+hollow_diamond(9)
+
+=begin
+
+Write a method that implements a miniature stack-and-register-based programming language that has the following commands:
+
+PUSH Push the register value on to the stack. Leave the value in the register.
+ADD Pops a value from the stack and adds it to the register value, storing the result in the register.
+SUB Pops a value from the stack and subtracts it from the register value, storing the result in the register.
+MULT Pops a value from the stack and multiplies it by the register value, storing the result in the register.
+DIV Pops a value from the stack and divides it into the register value, storing the integer result in the register.
+MOD Pops a value from the stack and divides it into the register value, storing the integer remainder of the division in the register.
+POP Remove the topmost item from the stack and place in register
+PRINT Print the register value
+
+=end
+
+class Minilang
+  def initialize()
+    @register = 0
+    @stack = []
+  end
+
+  def execute(commands)
+    stack = []
+    chunks = commands.split
+
+    chunks.each do |command|
+      if is_number?(command)
+        self.register = command.to_i
+        next
+      else
+        send(interpret(command))
+        # method(interpret(command)).call
+      end
+    end
+    nil
+  end
+
+  private
+    attr_accessor :register, :stack
+    class InvalidEntry < NameError; end
+
+    def interpret(command)
+      case command
+      when 'PUSH'  then :minilang_push
+      when 'POP'   then :minilang_pop
+      when 'ADD'   then :minilang_add
+      when 'SUB'   then :minilang_sub
+      when 'MULT'  then :minilang_mult
+      when 'DIV'   then :minilang_div
+      when 'MOD'   then :minilang_mod
+      when 'PRINT' then :minilang_print
+      else              :invalid_command
+      end
+    end
+
+    def is_number?(value)
+      value == value.to_i.to_s 
+    end
+
+    def invalid_command
+      raise InvalidEntry
+    end
+
+    def minilang_push
+      stack << register
+    end
+
+    def minilang_pop
+      self.register = stack.pop
+    end
+
+    def minilang_add
+      self.register = register + minilang_pop
+    end
+
+    def minilang_sub
+      self.register = register - minilang_pop
+    end
+
+    def minilang_mult
+      self.register = register * minilang_pop
+    end
+
+    def minilang_div
+      self.register = register / minilang_pop
+    end
+
+    def minilang_mod
+      self.register = register % minilang_pop
+    end
+
+    def minilang_print
+      puts register
+    end
+end
+
+=begin
+Minilang.new.execute('PRINT')
+#=> 0
+
+Minilang.new.execute('5 PUSH 3 MULT PRINT')
+#=> 15
+
+Minilang.new.execute('5 PRINT PUSH 3 PRINT ADD PRINT')
+#=> 5
+#=> 3
+#=> 8
+
+Minilang.new.execute('5 PUSH POP PRINT')
+# 5
+
+Minilang.new.execute('3 PUSH 4 PUSH 5 PUSH PRINT ADD PRINT POP PRINT ADD PRINT')
+#=> 5
+#=> 10
+#=> 4
+#=> 7
+
+Minilang.new.execute('3 PUSH PUSH 7 DIV MULT PRINT ')
+#=> 6
+
+Minilang.new.execute('4 PUSH PUSH 7 MOD MULT PRINT ')
+#=> 12
+
+Minilang.new.execute('-3 PUSH 5 SUB PRINT')
+#=> 8
+
+Minilang.new.execute('6 PUSH')
+# (nothing printed; no PRINT commands)
+=end
+# Minilang.new.execute('3 PUSH 5 MOD PUSH 7 PUSH 3 PUSH 4 PUSH 5 MULT ADD PRINT SUB PRINT DIV PRINT')
+#=> 8
+# Minilang.new.execute('MOO')
+#=> Minilang::InvalidEntry
+
+# Write a method that takes a sentence string as input, and returns the same string with
+# any sequence of the words 'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+# 'eight', 'nine' converted to a string of digits.
+
+NUMBERS = %w(zero one two three four five six seven eight nine)
+
+def word_to_digit(str)
+  str.split.map do |word|
+    clean_word = word.downcase.gsub(/[^a-z]/, '')
+    if NUMBERS.include?(clean_word)
+      NUMBERS.index(clean_word).to_s + word.gsub(clean_word, '')
+    else
+      word
+    end
+  end.join(' ')
+end
+
+def word_to_digit(str)
+  str.split.map do |word|
+    clean_word = word.downcase.gsub(/[^a-z]/, '')
+    if NUMBERS.include?(clean_word)
+      NUMBERS.index(clean_word).to_s + word.gsub(clean_word, '')
+    else
+      word
+    end
+  end.join(' ')
+end
+
+p word_to_digit('Please call me at five five five one two three four. Thanks.') == 
+  'Please call me at 5 5 5 1 2 3 4. Thanks.'
+
+# The Fibonacci series is a sequence of numbers starting with 1 and 1 where each
+# number is the sum of the two previous numbers: the 3rd Fibonacci number is
+# 1 + 1 = 2, the 4th is 1 + 2 = 3, the 5th is 2 + 3 = 5, and so on. In mathematical terms:
+# F(1) = 1
+# F(2) = 1
+# F(n) = F(n - 1) + F(n - 2) where n > 2
+
+def fibonacci(n)
+  return 1 if n <= 2
+  fibonacci(n - 1) + fibonacci(n - 2)
+end
+# 1, 1, 2, 3, 5, 8, 13
+puts "fibonacci (recursive) tests:"
+p fibonacci(1) == 1
+p fibonacci(2) == 1
+p fibonacci(3) == 2
+p fibonacci(4) == 3
+p fibonacci(5) == 5
+p fibonacci(12) == 144
+p fibonacci(20) == 6765
