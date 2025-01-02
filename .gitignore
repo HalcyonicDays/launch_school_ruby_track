@@ -9,3 +9,6 @@ temp/
 
 # ignore rubocop configs
  **/.rubocop.yml
+
+# ignore ALL .txt files
+*.txt
